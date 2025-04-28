@@ -1,174 +1,126 @@
-# LlamaIndex Proposal Generator Microservice
+# Proposal Generator with LlamaIndex + Gemini
 
-A powerful microservice for generating professional proposals using LlamaIndex, optimized for dynamic Q&A-based proposal generation.
+A microservice for generating customized proposals based on Q&A interactions, powered by LlamaIndex and Google's Gemini LLM.
 
-## Features
+## 🚀 Features
 
-- Dynamic Q&A flow for proposal generation
-- Structured data validation and business rules enforcement
-- Multi-LLM support with intelligent fallback
-- Real-time proposal streaming
-- Versioned proposal history
-- Enterprise-grade security and monitoring
+- **Q&A-Driven Proposal Generation**: Generate proposals from user-provided answers
+- **Dynamic Question Generation**: Smart follow-up questions based on previous answers
+- **Multiple Proposal Formats**: Brief, detailed, executive, and formal templates
+- **Validation Rules**: Business rule enforcement for answer validation
+- **Streaming Responses**: Real-time proposal generation with event streaming
+- **Gemini LLM Integration**: Leverages Google's Gemini LLM for high-quality content
 
-## Architecture
+## 📋 Architecture
 
-The service follows a microservice architecture with the following components:
+The system follows a microservice architecture as detailed in `docs.txt`:
 
-- **API Layer**: FastAPI-based REST endpoints
-- **Query Planner**: Structures Q&A flow using LlamaIndex
-- **Response Synthesizer**: Generates LLM responses with context
+- **API Layer**: FastAPI endpoints for interaction
+- **Query Planner**: Structures Q&A flow as retrieval tasks
+- **Response Synthesizer**: Generates content with context
 - **Template Engine**: Maps answers to proposal sections
-- **Validation Module**: Enforces answer constraints
-- **LLM Gateway**: Multi-LLM abstraction layer
-- **History Store**: Versioned proposal drafts
+- **Validation Module**: Enforces business rules
 
-## Prerequisites
+## 🛠️ Setup
+
+### Prerequisites
 
 - Python 3.9+
-- Docker and Docker Compose
-- PostgreSQL 15+
-- Redis
-- OpenAI API key or other LLM provider credentials
+- Google API key for Gemini
 
-## Installation
+### Installation
 
 1. Clone the repository:
 
-```bash
-git clone <repository-url>
-cd proposal-generator
-```
+   ```bash
+   git clone https://github.com/yourusername/proposal-generator.git
+   cd proposal-generator
+   ```
 
-2. Create a virtual environment:
+2. Create and activate a virtual environment:
 
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+   ```bash
+   python -m venv .venv
+   # On Windows
+   .venv\Scripts\activate
+   # On Unix or MacOS
+   source .venv/bin/activate
+   ```
 
 3. Install dependencies:
 
-```bash
-pip install -r requirements.txt
-```
-or 
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file:
+   ```
+   GOOGLE_API_KEY=your_google_api_key_here
+   DEBUG=true
+   LOG_LEVEL=INFO
+   ```
+
+### Running the Application
+
+Start the FastAPI server:
 
 ```bash
-pip install -e .
+python main.py
 ```
 
-4. Set up environment variables:
+The API will be available at http://localhost:8000.
+
+API documentation is available at:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## 🧩 API Usage
+
+### Creating a Session
 
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+curl -X POST http://localhost:8000/api/v1/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "user123", "user_name": "John Doe"}'
 ```
 
-## Configuration
-
-Create a `.env` file with the following variables:
-
-```env
-# API Configuration
-API_HOST=0.0.0.0
-API_PORT=8000
-API_KEY=your-api-key
-
-# Database
-POSTGRES_USER=proposals
-POSTGRES_PASSWORD=your-password
-POSTGRES_DB=proposals
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-# Redis
-REDIS_HOST=redis
-REDIS_PORT=6379
-
-# LLM Configuration
-OPENAI_API_KEY=your-openai-key
-ANTHROPIC_API_KEY=your-anthropic-key
-DEFAULT_LLM=gpt-4-turbo
-```
-
-## Running the Service
-
-### Using Docker Compose
+### Answering Questions
 
 ```bash
-docker-compose -f docker-compose.llamaindex.yml up -d
+curl -X POST http://localhost:8000/api/v1/sessions/{session_id}/answers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What is the name of the project?",
+    "answer": "Website Redesign Project",
+    "question_type": "GENERAL"
+  }'
 ```
 
-### Local Development
+### Generating a Proposal
 
 ```bash
-uvicorn proposals.main:app --reload
+curl -X POST http://localhost:8000/api/v1/sessions/{session_id}/proposals \
+  -H "Content-Type: application/json" \
+  -d '{
+    "format": "detailed",
+    "include_metadata": true
+  }'
 ```
 
-## API Endpoints
+## 📚 Documentation Links
 
-### Session Management
+- [Response Synthesizer](https://docs.llamaindex.ai/en/stable/module_guides/querying/response_synthesizers/)
+- [Query Planner](https://docs.llamaindex.ai/en/stable/examples/workflow/planning_workflow/)
+- [Vector Store Index](https://docs.llamaindex.ai/en/stable/module_guides/indexing/vector_store_index/)
+- [Evaluation](https://docs.llamaindex.ai/en/stable/optimizing/evaluation/evaluation/)
+- [Streaming](https://docs.llamaindex.ai/en/stable/module_guides/deploying/query_engine/streaming/)
+- [Gemini Integration](https://docs.llamaindex.ai/en/stable/examples/llm/gemini/)
 
-- `POST /sessions` - Initialize a new Q&A session
-- `POST /answers` - Process and validate answers
-- `POST /generate` - Generate proposal from session data
-- `GET /proposals/stream` - Stream proposal generation
+## 🤝 Contributing
 
-## Usage Example
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-```python
-import requests
-
-# Initialize session
-session = requests.post("http://localhost:8000/sessions",
-                       json={"user_id": "user123"})
-session_id = session.json()["session_id"]
-
-# Submit answers
-answer = requests.post("http://localhost:8000/answers",
-                      json={
-                          "session_id": session_id,
-                          "question": "What is your budget?",
-                          "answer": "50000"
-                      })
-
-# Generate proposal
-proposal = requests.post("http://localhost:8000/generate",
-                        json={
-                            "session_id": session_id,
-                            "format": "detailed"
-                        })
-```
-
-## Monitoring
-
-The service includes built-in monitoring using Prometheus metrics:
-
-- Query planning accuracy
-- LLM usage and costs
-- Proposal quality metrics
-- Performance metrics (latency, error rates)
-
-## Security
-
-- API key authentication
-- Rate limiting per API key
-- SOC2-compliant data handling
-- Secure credential management
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the maintainers.

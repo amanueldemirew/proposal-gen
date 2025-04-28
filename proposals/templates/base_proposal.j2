@@ -1,0 +1,72 @@
+# {{ format | upper }} PROPOSAL
+
+## Executive Summary
+
+{{ summary }}
+
+## Project Background
+
+{% if project_background %}
+{{ project_background }}
+{% else %}
+This proposal addresses the needs outlined in our discussions regarding {{ project_name }}.
+{% endif %}
+
+## Scope of Work
+
+{% if scope %}
+{{ scope }}
+{% else %}
+The project scope includes the following key deliverables:
+
+{% for deliverable in deliverables %}
+- {{ deliverable }}
+{% endfor %}
+{% endif %}
+
+## Budget
+
+{% if budget_breakdown %}
+{{ budget_breakdown }}
+{% else %}
+Total Budget: {{ budget }}
+
+Budget allocation:
+- Planning: 20%
+- Implementation: 50%
+- Testing: 15%
+- Deployment: 15%
+{% endif %}
+
+## Timeline
+
+{% if timeline_detail %}
+{{ timeline_detail }}
+{% else %}
+Project Duration: {{ timeline }}
+
+Key milestones:
+{% for milestone in milestones %}
+- {{ milestone.name }}: {{ milestone.date }}
+{% endfor %}
+{% endif %}
+
+{% if additional_sections %}
+{% for section in additional_sections %}
+## {{ section.title }}
+
+{{ section.content }}
+
+{% endfor %}
+{% endif %}
+
+## Contact Information
+
+{% if contact_info %}
+{{ contact_info }}
+{% else %}
+For questions about this proposal, please contact:
+- Name: {{ contact_name }}
+- Email: {{ contact_email }}
+- Phone: {{ contact_phone }}
+{% endif %} 

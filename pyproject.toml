@@ -4,4 +4,25 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "aiohttp>=3.11.18",
+    "asyncpg>=0.30.0",
+    "fastapi[all]>=0.115.12",
+    "google-generativeai>=0.8.5",
+    "jinja2>=3.1.6",
+    "litellm>=1.67.4.post1",
+    "llama-index>=0.12.33",
+    "llama-index-core>=0.12.33.post1",
+    "llama-index-embeddings-gemini>=0.3.2",
+    "llama-index-llms-gemini>=0.4.14",
+    "passlib[bcrypt]>=1.7.4",
+    "prometheus-client>=0.21.1",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.11.3",
+    "python-dotenv>=1.1.0",
+    "python-jose[cryptography]>=3.4.0",
+    "python-multipart>=0.0.20",
+    "redis>=5.2.1",
+    "uuid>=1.30",
+    "uvicorn>=0.34.2",
+]
