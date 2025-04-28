@@ -30,6 +30,7 @@ venv/
 ENV/
 env/
 
+
 # IDE specific files
 .idea/
 .vscode/
@@ -42,4 +43,6 @@ Thumbs.db
 
 # Logs
 *.log
-logs/ 
+logs/
+
+.env
